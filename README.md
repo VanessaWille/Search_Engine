@@ -2,8 +2,8 @@
 Repositório para disciplina Projetos em Ciência de Dados, na qual o objetivo será desenvolver uma search engine.
 
 ## Grupo
-- Gustavo Sanches
+- Gustavo Sanches Costa
 - Gustavo Ramalho
-- Lucas Treuke
-- Rodrigo Pitucci
+- Lucas Bryan Treuke
+- Rodrigo Gomes Hutz Pintucci
 - Vanessa Berwanger Wille
