@@ -1,4 +1,4 @@
-# Projetos em Ciência de Dados: Serach Engine
+# Projetos em Ciência de Dados: Search Engine
 Repositório para disciplina Projetos em Ciência de Dados, na qual o objetivo será desenvolver uma search engine.
 
 ## Grupo
