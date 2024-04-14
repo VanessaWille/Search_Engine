@@ -6,25 +6,30 @@ tfidf_rank_profile = RankProfile(
     )
 
 bm25_rank_profile = RankProfile(
-                        name="bm25", 
-                        first_phase="bm25(title) + bm25(body)"
-                    )
+        name="bm25", 
+        inputs=[("query(q)", "tensor<float>(x[384])")],
+        functions=[Function(
+            name="bm25sum", expression="bm25(title) + bm25(body)"
+        )],
+        first_phase="bm25sum"
+    ),
 
 semantic_search_rank_profile = RankProfile(
-                        name="semantic", 
-                        inputs=[("query(q)", "tensor<float>(x[384])")],
-                        first_phase="closeness(field, embedding)"
-                    )
+            name="semantic", 
+            inputs=[("query(q)", "tensor<float>(x[384])")],
+            first_phase="closeness(field, embedding)"
+        )
+
 fusion_rank_profile = RankProfile(
-                        name="fusion", 
-                        inherits="bm25",
-                        inputs=[("query(q)", "tensor<float>(x[384])")],
-                        first_phase="closeness(field, embedding)",
-                        global_phase=GlobalPhaseRanking(
-                            expression="reciprocal_rank_fusion(bm25sum, closeness(field, embedding))",
-                            rerank_count=1000
-                        )
-                    )   
+            name="fusion", 
+            inherits="bm25",
+            inputs=[("query(q)", "tensor<float>(x[384])")],
+            first_phase="closeness(field, embedding)",
+            global_phase=GlobalPhaseRanking(
+                expression="reciprocal_rank_fusion(bm25sum, closeness(field, embedding))",
+                rerank_count=1000
+            )
+        )   
 
 
 def create_package(app_type="semantic-search"):
@@ -46,13 +51,33 @@ def create_package(app_type="semantic-search"):
                     ]
                 ),
                 fieldsets=[
-                    FieldSet(name="default", fields=["title", "body"])
-                ],
-                rank_profiles=[
-                    bm25_rank_profile,
-                    semantic_search_rank_profile,
-                    fusion_rank_profile             
-                ]
+                FieldSet(name = "default", fields = ["title", "body"])
+            ],
+            rank_profiles=[
+                RankProfile(
+                    name="bm25", 
+                    inputs=[("query(q)", "tensor<float>(x[384])")],
+                    functions=[Function(
+                        name="bm25sum", expression="bm25(title) + bm25(body)"
+                    )],
+                    first_phase="bm25sum"
+                ),
+                RankProfile(
+                    name="semantic", 
+                    inputs=[("query(q)", "tensor<float>(x[384])")],
+                    first_phase="closeness(field, embedding)"
+                ),
+                RankProfile(
+                    name="fusion", 
+                    inherits="bm25",
+                    inputs=[("query(q)", "tensor<float>(x[384])")],
+                    first_phase="closeness(field, embedding)",
+                    global_phase=GlobalPhaseRanking(
+                        expression="reciprocal_rank_fusion(bm25sum, closeness(field, embedding))",
+                        rerank_count=1000
+                    )
+                )                
+            ]
             )
             ],
             components=[Component(id="e5", type="hugging-face-embedder",
