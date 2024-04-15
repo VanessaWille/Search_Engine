@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="icon" href="/static/findmypastaIcon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="/static/findmypastaIcon.png" alt="Logo" width="250">
+        </div>
+        <h1>Find my pasta!</h1>
+        <div id="number-of-files">No files loaded to search yet :(</div>
+        <form id="search-form" class="disabled">
+            <input type="text" id="query" name="query" placeholder="Enter your query...">
+            <input type="submit" value="Search">
+        </form>
+        <ul id="results"></ul>
+    </div>
+
+    <script>
+        more_data_button = '<button id="more-data-button" onclick="feedFiles()">Feed more data!</button>';
+
+        document.getElementById("search-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            // Get the query from the input field
+            var query = document.getElementById("query").value;
+
+            // Make a POST request to the Flask server
+            fetch("/chat", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'query=' + encodeURIComponent(query)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the results
+                var resultsList = document.getElementById("results");
+                resultsList.innerHTML = ""; // Clear previous results
+                
+                data.results.forEach(result => {
+                    var listItem = document.createElement("li");
+                    listItem.innerHTML = '<h3>' + result.title + '</h3><p>' + result.body + '</p>';
+                    resultsList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Deploys the myPasta app when the page is loaded
+        fetch("/deploy", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'deploy=' + encodeURIComponent("deploy")
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Log the response data to the console
+            if (data.status == "Data not loaded") {
+                alert("An error occurred while loading the data. Please try again later...");
+            } else {
+                document.getElementById("number-of-files").innerHTML = "Number of files loaded: " + data.documents + more_data_button;
+                document.getElementById("search-form").classList.remove("disabled"); // Enable the search form
+            }        
+        })
+        .catch(error => console.error('Error:', error));
+
+        // function for feeding a number of files
+        function feedFiles() {
+            var numberOfFiles = prompt("Enter the number of files you want to load (max: 220000, recommended: <~2000):");
+            fetch("/load_data", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'num_files=' + encodeURIComponent(numberOfFiles)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Log the response data to the console
+                if (data.status == "Data not loaded") {
+                    alert("An error occurred while loading the data. Please try again later...");
+                } else {
+                    alert("Data loaded successfully!");
+                    document.getElementById("number-of-files").innerHTML = "Number of files loaded: " + data.documents;
+                    document.getElementById("search-form").classList.remove("disabled"); // Enable the search form
+                }        
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+    </script>
+</body>
+</html>
