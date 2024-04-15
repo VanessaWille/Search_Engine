@@ -16,7 +16,7 @@
             <img src="/static/findmypastaIcon.png" alt="Logo" width="250">
         </div>
         <h1>Find my pasta!</h1>
-        <div id="number-of-files">No files loaded to search yet :(</div>
+        <div id="number-of-files">Connecting to the vespa app... <div class="loader"></div></div>
         <form id="search-form" class="disabled">
             <input type="text" id="query" name="query" placeholder="Enter your query...">
             <input type="submit" value="Search">
@@ -24,6 +24,9 @@
         <ul id="results"></ul>
     </div>
 
+    <div class="credits">
+        <p>Powered by <a href="https://vespa.ai/">Vespa.ai</a></p>
+    </div>
     <script>
         more_data_button = '<button id="more-data-button" onclick="feedFiles()">Feed more data!</button>';
 
@@ -43,15 +46,21 @@
             })
             .then(response => response.json())
             .then(data => {
+                // add the squish class to container
+                document.querySelector(".container").classList.add("showing-results");
+
                 // Display the results
                 var resultsList = document.getElementById("results");
                 resultsList.innerHTML = ""; // Clear previous results
                 
-                data.results.forEach(result => {
-                    var listItem = document.createElement("li");
-                    listItem.innerHTML = '<h3>' + result.title + '</h3><p>' + result.body + '</p>';
-                    resultsList.appendChild(listItem);
-                });
+                setTimeout(() => {
+                    data.results.forEach(result => {
+                        var listItem = document.createElement("li");
+                        listItem.innerHTML = '<h3>' + result.title + '</h3><p>' + result.body + '</p>';
+                        resultsList.appendChild(listItem);
+                    });
+                    document.querySelector(".container").classList.remove("showing-results");
+                }, 300);
             })
             .catch(error => console.error('Error:', error));
         });
