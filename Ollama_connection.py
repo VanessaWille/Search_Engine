@@ -4,6 +4,10 @@ import time
 
 class OllamaConnection:
     def __init__(self, model_name, ollama_host, max_tokens=50, stream=False):
+        # checks if ollama_host ends in /
+        if ollama_host[-1] != "/":
+            ollama_host += "/"  # add / to the end of the host
+
         self.model_name = model_name
         self.ollama_host = ollama_host
         self.max_tokens = max_tokens
@@ -38,6 +42,3 @@ class OllamaConnection:
             return actual_response
         else:
             return "Error in response: ", response.status_code, response.text
-
-
-    
