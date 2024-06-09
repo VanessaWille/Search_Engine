@@ -2,3 +2,4 @@
 __pycache__/
 input/food_dataset.csv
 .env
+ollama_test.ipynb
