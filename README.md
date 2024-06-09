@@ -7,6 +7,12 @@ Repositório para disciplina Projetos em Ciência de Dados, na qual o objetivo �
  - ```fill_in_missing_reviews.py```: Codigo para preencher com um LLM as notas faltantes para os pares de query-resposta dados pelos modelos de busca.
  - ```models_comparison.ipynb```: Notebook de relatório para comparar o desempenho de diferentes modelos de busca.
 
+## Como é feita a avaliação dos modelos de busca
+![Evaluating models diagram](static/evaluating%20search%20models.png)
+
+## Como é feita a avaliação automática das respostas dos modelos de busca
+![Generative grading diagram](static/auto%20grading%20recipes%20by%20query.png)
+
 
 ## Grupo
 - Gustavo Ramalho
