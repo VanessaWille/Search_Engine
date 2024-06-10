@@ -8,7 +8,7 @@ import time
 REVIEWS_CHECKPOINT_PATH = "reviews/checkpoints/missing_reviews_bank_checkpoint.xlsx"
 LLM_GRADES_PATH = "reviews/checkpoints/llm_grades.xlsx"
 MISSING_REVIEWS_BANK_PATH  = "reviews/missing_reviews_bank.xlsx"
-KEY_COLUMNS = ["Tipo", "Descrição", "Query", "id", "title", "body"]
+KEY_COLUMNS = ["Tipo", "Descrição", "Query", "id", "title"]
 PROMPT_ENDING = "\n\nYour answer should be only a block of code in json format, with the 'Assistant grading' key containing the integer format grade and the 'Justificative' key containing the justificative."
 EVALUATOR = "llama"
 load_dotenv()
@@ -148,7 +148,7 @@ def fill_graded_reviews_from_checkpoint(base_reviews, graded_reviews):
     base_reviews_not_graded, base_reviews_graded = split_reviewed_and_missing(base_reviews)
 
     # add the graded_reviews to the base_reviews_not_graded
-    graded_reviews = graded_reviews[KEY_COLUMNS+["Nota", "Evaluator", "Justificativa"]]
+    graded_reviews = graded_reviews[KEY_COLUMNS+["body", "Nota", "Evaluator", "Justificativa"]]
     base_reviews_not_graded = pd.concat([base_reviews_not_graded, graded_reviews])
     # now we have some keys with both a graded and a not graded review
     # we will keep the graded review
