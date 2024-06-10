@@ -70,6 +70,9 @@ def get_grades_from_llm_responses(df):
     return df
 
 def fix_llm_response(response):
+    if not type(response) == str:
+        return None
+
     # if the response is not a valid json, we will try to fix it
     if not valid_json(response):
         # the response is not a valid json, we will try to fix it

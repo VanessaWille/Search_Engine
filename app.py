@@ -1,5 +1,5 @@
 import pyvespa_functions as pf
-from build_dataset import make_food_dataset
+# from old_code.build_dataset import make_food_dataset
 import pandas as pd
 from vespa.deployment import VespaDocker
 from vespa.io import VespaQueryResponse
