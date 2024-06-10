@@ -16,7 +16,8 @@ class OllamaConnection:
             "Content-Type": "application/json"
         }
 
-        assert requests.get(ollama_host).text == "Ollama is running"  # check if the server is running
+        if requests.get(ollama_host).text != "Ollama is running":  # check if the server is running
+            raise Exception("Ollama server is not running")
 
         self.url = ollama_host + "api/generate"
 
