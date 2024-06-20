@@ -4,6 +4,7 @@ import json
 from Ollama_connection import OllamaConnection
 from dotenv import load_dotenv
 import time
+from tqdm import tqdm
 
 REVIEWS_CHECKPOINT_PATH = "reviews/checkpoints/missing_reviews_bank_checkpoint.xlsx"
 LLM_GRADES_PATH = "reviews/checkpoints/llm_grades.xlsx"
@@ -28,7 +29,7 @@ def fill_in_missing_reviews():
         missing_grades_df = pd.read_excel(REVIEWS_CHECKPOINT_PATH)
 
     # get the llm responses for the missing reviews
-    for index, row in missing_grades_df.iterrows():
+    for index, row in tqdm(missing_grades_df.iterrows(), total=len(missing_grades_df[missing_grades_df["llm_response"].isna()]), desc="Getting LLM responses"):
         if row["llm_response"] is None:
             prompt = row["gpt_template"] + prompt_ending
             response = ollama_connection.ask_the_llm(prompt)
