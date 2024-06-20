@@ -120,6 +120,7 @@ from vespa.io import VespaResponse
 from ipywidgets import IntProgress, VBox, Label, Layout  # Import Layout for styling
 from IPython.display import display
 import time
+from vespa.application import Vespa
 
 class VespaFeeder:
     def __init__(self, app):
@@ -166,3 +167,10 @@ class VespaFeeder:
         minutes = int(time_in_seconds // 60)
         seconds = int(time_in_seconds - (minutes * 60))
         return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+def is_application_running(url: str, port=None) -> bool:
+    response = Vespa(url=url, port=port).get_application_status()
+    if response.status_code == 200:
+        return True
+    else:
+        return False

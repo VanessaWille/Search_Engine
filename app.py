@@ -3,6 +3,7 @@ import pyvespa_functions as pf
 import pandas as pd
 from vespa.deployment import VespaDocker
 from vespa.io import VespaQueryResponse
+from vespa.application import Vespa
 
 class FindMyPasta:
     def __init__(self):
@@ -11,9 +12,19 @@ class FindMyPasta:
         self.vespa_app = None
         self._df = None
         self.feeder = None
+
+    def try_local_vespa_connection(self):
+        if pf.is_application_running(url="http://localhost", port=8080):
+            self.vespa_app = Vespa(url="http://localhost", port=8080)
+            self.feeder = pf.VespaFeeder(self.vespa_app)
+            return True
+        return False
+
     
     def deploy_vespa(self):
-        if self.vespa_app is None:
+        sucess = self.try_local_vespa_connection()
+        
+        if not sucess:
             self.vespa_app = self.vespa_docker.deploy(application_package=self.package)
             self.feeder = pf.VespaFeeder(self.vespa_app)
 
