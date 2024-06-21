@@ -4,3 +4,4 @@ input/food_dataset.csv
 .env
 ollama_test.ipynb
 vespa_test.ipynb
+embeddings/
